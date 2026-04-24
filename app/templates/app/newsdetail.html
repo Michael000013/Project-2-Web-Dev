@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ article.title }} - Movie Portal{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- DB - Article Header -->
+            <article>
+                <h1 class="display-4 mb-3">{{ article.title }}</h1>
+                
+                <!-- DB - Article Metadata -->
+                <div class="article-meta mb-4 pb-3 border-bottom">
+                    <span class="text-muted me-3">
+                        <i class="fas fa-user"></i> By {{ article.author }}
+                    </span>
+                    <span class="text-muted me-3">
+                        <i class="fas fa-calendar"></i> {{ article.published_date|date:"F d, Y" }}
+                    </span>
+                    {% if article.is_featured %}
+                    <span class="badge bg-warning text-dark ms-2">Featured</span>
+                    {% endif %}
+                </div>
+
+                <!-- DB - Article Featured Image -->
+                {% if article.image %}
+                <img src="{{ article.image.url }}" class="img-fluid rounded mb-4" alt="{{ article.title }}">
+                {% endif %}
+
+                <!-- DB - Article Content -->
+                <div class="article-content lead">
+                    {{ article.content|linebreaks }}
+                </div>
+
+                <!-- DB - Article Update Notice -->
+                {% if article.updated_date != article.published_date %}
+                <div class="alert alert-info mt-4">
+                    <small><i class="fas fa-info-circle"></i> Last updated: {{ article.updated_date|date:"F d, Y \a\t H:i" }}</small>
+                </div>
+                {% endif %}
+            </article>
+
+            <!-- Share Buttons -->
+            <div class="mt-5 pt-4 border-top">
+                <h5>Share this article:</h5>
+                <div class="share-buttons mt-3">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={% url 'app:news_detail' article.pk %}" 
+                       class="btn btn-sm btn-outline-primary me-2" target="_blank">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url={% url 'app:news_detail' article.pk %}&text={{ article.title }}" 
+                       class="btn btn-sm btn-outline-info me-2" target="_blank">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url={% url 'app:news_detail' article.pk %}" 
+                       class="btn btn-sm btn-outline-dark" target="_blank">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- DB - Related News Section -->
+            {% if related_news %}
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-link"></i> Related Articles</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for news in related_news %}
+                    <a href="{% url 'app:news_detail' news.pk %}" class="list-group-item list-group-item-action">
+                        <h6 class="mb-1">{{ news.title }}</h6>
+                        <small class="text-muted">{{ news.published_date|date:"M d, Y" }}</small>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Quick Links -->
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-link"></i> Quick Links</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'app:home' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="{% url 'app:news_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-newspaper"></i> All News
+                    </a>
+                    <a href="{% url 'app:movie_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-video"></i> Movies
+                    </a>
+                    <a href="{% url 'app:trailers' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-film"></i> Trailers
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

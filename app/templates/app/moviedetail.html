@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ movie.title }} - Movie Portal{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- DB - Movie Detail Section -->
+    <div class="row mb-5">
+        <div class="col-md-4">
+            {% if movie.cover_image %}
+            <img src="{{ movie.cover_image.url }}" class="img-fluid rounded shadow" alt="{{ movie.title }}">
+            {% else %}
+            <div style="height: 400px; background: #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-image fa-5x text-muted"></i>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <h1 class="display-4">{{ movie.title }}</h1>
+            
+            <!-- DB - Movie Metadata -->
+            <div class="mb-4">
+                <span class="badge bg-primary">{{ movie.genre }}</span>
+                <span class="badge bg-secondary">{{ movie.director }}</span>
+                <span class="badge bg-info">{{ movie.release_date|date:"Y" }}</span>
+            </div>
+
+            <!-- DB - Rating Display -->
+            <div class="rating mb-4">
+                {% for i in "x"|rjust:"5" %}
+                <i class="fas fa-star {% if forloop.counter <= movie.rating %}text-warning{% else %}text-secondary{% endif %}" style="font-size: 1.5rem;"></i>
+                {% endfor %}
+                <span class="ms-3 h5">{{ movie.rating }}/5</span>
+            </div>
+
+            <!-- DB - Movie Details -->
+            <table class="table">
+                <tr>
+                    <td><strong>Release Date:</strong></td>
+                    <td>{{ movie.release_date|date:"F d, Y" }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Duration:</strong></td>
+                    <td>{{ movie.duration }} minutes</td>
+                </tr>
+                <tr>
+                    <td><strong>Director:</strong></td>
+                    <td>{{ movie.director }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Genre:</strong></td>
+                    <td>{{ movie.genre }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Cast:</strong></td>
+                    <td>{{ movie.cast }}</td>
+                </tr>
+            </table>
+
+            <!-- DB - Description -->
+            <h3>About</h3>
+            <p class="lead">{{ movie.description }}</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- DB - Trailers Section -->
+    {% if trailers %}
+    <section class="mb-5">
+        <h2 class="mb-4"><i class="fas fa-video"></i> Trailers</h2>
+        <div class="row">
+            {% for trailer in trailers %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    {% if trailer.thumbnail %}
+                    <img src="{{ trailer.thumbnail.url }}" class="card-img-top" alt="{{ trailer.title }}" style="height: 250px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ trailer.title }}</h5>
+                        <p class="card-text text-muted">
+                            <i class="fas fa-clock"></i> {{ trailer.duration }} seconds
+                        </p>
+                        <a href="{{ trailer.video_url }}" class="btn btn-danger btn-sm" target="_blank">
+                            <i class="fab fa-youtube"></i> Watch on YouTube
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <hr>
+
+    <!-- DB - Related Movies Section -->
+    {% if related_movies %}
+    <section class="mb-5">
+        <h2 class="mb-4"><i class="fas fa-film"></i> Related Movies</h2>
+        <div class="row">
+            {% for related in related_movies %}
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="card h-100">
+                    {% if related.cover_image %}
+                    <img src="{{ related.cover_image.url }}" class="card-img-top" alt="{{ related.title }}" style="height: 250px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ related.title }}</h5>
+                        <p class="text-muted small">{{ related.genre }}</p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="{% url 'app:movie_detail' related.pk %}" class="btn btn-sm btn-outline-primary w-100">View</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <div class="text-center mt-5">
+        <a href="{% url 'app:movie_list' %}" class="btn btn-lg btn-outline-secondary">Back to Movies</a>
+    </div>
+</div>
+{% endblock %}

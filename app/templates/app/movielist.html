@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Movies - Movie Portal{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4"><i class="fas fa-video"></i> All Movies</h1>
+            <p class="text-muted">Browse our complete collection of movies</p>
+        </div>
+    </div>
+
+    {% if movies %}
+    <div class="row">
+        {% for movie in movies %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <!-- DB -->
+            <div class="movie-card card h-100 shadow-sm hover-card">
+                {% if movie.cover_image %}
+                <img src="{{ movie.cover_image.url }}" class="card-img-top" alt="{{ movie.title }}" style="height: 300px; object-fit: cover;">
+                {% else %}
+                <div style="height: 300px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-image fa-3x text-white"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ movie.title }}</h5>
+                    <p class="text-muted small mb-2">
+                        <strong>Genre:</strong> {{ movie.genre }}<br>
+                        <strong>Director:</strong> {{ movie.director }}
+                    </p>
+                    <p class="card-text small">{{ movie.description|truncatewords:10 }}</p>
+                    
+                    <!-- DB - Rating Display -->
+                    <div class="rating mb-2">
+                        {% for i in "x"|rjust:"5" %}
+                        <i class="fas fa-star {% if forloop.counter <= movie.rating %}text-warning{% else %}text-secondary{% endif %}"></i>
+                        {% endfor %}
+                        <span class="ms-2 text-muted">{{ movie.rating }}/5</span>
+                    </div>
+
+                    <!-- DB - Movie Details -->
+                    <small class="text-muted d-block mb-2">
+                        <i class="fas fa-calendar"></i> {{ movie.release_date|date:"M d, Y" }}<br>
+                        <i class="fas fa-clock"></i> {{ movie.duration }} mins
+                    </small>
+                </div>
+                <div class="card-footer bg-white">
+                    <a href="{% url 'app:movie_detail' movie.pk %}" class="btn btn-primary btn-sm w-100">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav class="mt-5" aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1">First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="alert alert-info text-center py-5">
+        <p>No movies available at the moment. Check back soon!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    }
+</style>
+{% endblock %}

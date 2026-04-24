@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - Movie Portal{% endblock %}
+
+{% block content %}
+<!-- Hero Slider Section -->
+<section class="hero-slider mb-5">
+    {% if sliders %}
+    <div id="sliderCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for slider in sliders %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                {% if slider.image %}
+                <img src="{{ slider.image.url }}" class="d-block w-100" alt="{{ slider.title }}" style="height: 500px; object-fit: cover;">
+                {% else %}
+                <div style="height: 500px; background: #333; display: flex; align-items: center; justify-content: center;">
+                    <span class="text-white">No image</span>
+                </div>
+                {% endif %}
+                <div class="carousel-caption d-none d-md-block">
+                    <h5 class="display-4">{{ slider.title }}</h5>
+                    <p>{{ slider.description }}</p>
+                    {% if slider.link_url %}
+                    <a href="{{ slider.link_url }}" class="btn btn-primary btn-lg">Learn More</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#sliderCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#sliderCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center py-5">No featured content available</div>
+    {% endif %}
+</section>
+
+<div class="container">
+    <!-- Featured News Section -->
+    {% if featured_news %}
+    <section class="featured-news mb-5">
+        <h2 class="mb-4"><i class="fas fa-star"></i> Featured News</h2>
+        <div class="row">
+            {% for news in featured_news %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if news.image %}
+                    <img src="{{ news.image.url }}" class="card-img-top" alt="{{ news.title }}" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ news.title }}</h5>
+                        <p class="card-text">{{ news.content|truncatewords:20 }}</p>
+                        <small class="text-muted">by {{ news.author }}</small>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="{% url 'app:news_detail' news.pk %}" class="btn btn-sm btn-outline-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Recent Movies Section -->
+    {% if recent_movies %}
+    <section class="recent-movies mb-5">
+        <h2 class="mb-4"><i class="fas fa-video"></i> Recent Movies</h2>
+        <div class="row">
+            {% for movie in recent_movies %}
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="movie-card card h-100">
+                    {% if movie.cover_image %}
+                    <img src="{{ movie.cover_image.url }}" class="card-img-top" alt="{{ movie.title }}" style="height: 300px; object-fit: cover;">
+                    {% else %}
+                    <div style="height: 300px; background: #ddd; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-image fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ movie.title }}</h5>
+                        <p class="text-muted small">{{ movie.genre }}</p>
+                        <div class="rating mb-2">
+                            {% for i in "x"|rjust:"5" %}
+                            <i class="fas fa-star {% if forloop.counter <= movie.rating %}text-warning{% else %}text-secondary{% endif %}"></i>
+                            {% endfor %}
+                            <span class="ms-2">{{ movie.rating }}/5</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="{% url 'app:movie_detail' movie.pk %}" class="btn btn-sm btn-primary w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'app:movie_list' %}" class="btn btn-lg btn-outline-primary">View All Movies</a>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Latest News Section -->
+    {% if latest_news %}
+    <section class="latest-news mb-5">
+        <h2 class="mb-4"><i class="fas fa-newspaper"></i> Latest News</h2>
+        <div class="row">
+            {% for news in latest_news %}
+            <div class="col-md-6 mb-4">
+                <div class="row g-0 border rounded">
+                    {% if news.image %}
+                    <div class="col-md-4">
+                        <img src="{{ news.image.url }}" class="img-fluid rounded-start" alt="{{ news.title }}" style="height: 200px; object-fit: cover;">
+                    </div>
+                    {% endif %}
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ news.title }}</h5>
+                            <p class="card-text">{{ news.content|truncatewords:15 }}</p>
+                            <small class="text-muted">{{ news.published_date|date:"M d, Y" }}</small>
+                            <br>
+                            <a href="{% url 'app:news_detail' news.pk %}" class="btn btn-sm btn-outline-primary mt-2">Read Article</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-rotate slider every 5 seconds
+    const carousel = document.getElementById('sliderCarousel');
+    if (carousel) {
+        new bootstrap.Carousel(carousel, {
+            interval: 5000,
+            wrap: true
+        });
+    }
+</script>
+{% endblock %}

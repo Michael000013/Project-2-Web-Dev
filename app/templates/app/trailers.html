@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Trailers - Movie Portal{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4"><i class="fas fa-video"></i> Movie Trailers</h1>
+            <p class="text-muted">Watch the latest trailers from our collection</p>
+        </div>
+    </div>
+
+    {% if movies_with_trailers %}
+    <div class="row">
+        {% for movie in movies_with_trailers %}
+        <div class="col-12 mb-5">
+            <!-- DB -->
+            <div class="card">
+                <div class="card-header bg-dark">
+                    <h4 class="text-white mb-0">
+                        <i class="fas fa-film"></i> {{ movie.title }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for trailer in movie.trailers.all %}
+                        <div class="col-md-6 mb-3">
+                            <!-- DB - Trailer Card -->
+                            <div class="trailer-card border rounded p-3">
+                                {% if trailer.thumbnail %}
+                                <img src="{{ trailer.thumbnail.url }}" class="img-fluid rounded mb-3" alt="{{ trailer.title }}" style="width: 100%; height: 250px; object-fit: cover;">
+                                {% else %}
+                                <div style="width: 100%; height: 250px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                                    <i class="fas fa-video fa-3x text-muted"></i>
+                                </div>
+                                {% endif %}
+                                <h5>{{ trailer.title }}</h5>
+                                <p class="text-muted small">
+                                    <i class="fas fa-clock"></i> {{ trailer.duration }} seconds<br>
+                                    <i class="fas fa-calendar"></i> {{ trailer.uploaded_date|date:"M d, Y" }}
+                                </p>
+                                <a href="{{ trailer.video_url }}" class="btn btn-danger w-100" target="_blank">
+                                    <i class="fab fa-youtube"></i> Watch Trailer
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center py-5">
+        <p>No trailers available at the moment. Check back soon!</p>
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-5">
+        <a href="{% url 'app:home' %}" class="btn btn-lg btn-outline-secondary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .trailer-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+    .trailer-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+</style>
+{% endblock %}
