@@ -134,6 +134,16 @@
     </section>
     {% endif %}
 </div>
+
+<section class="newsletter text-center mt-5">
+    <h3>Subscribe to our Newsletter</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="email" name="email" placeholder="Enter your email" required>
+        <button type="submit" class="btn btn-primary">Subscribe</button>
+    </form>
+</section>
+
 {% endblock %}
 
 {% block extra_js %}

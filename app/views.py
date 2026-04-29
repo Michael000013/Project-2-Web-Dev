@@ -19,6 +19,12 @@ class HomeView(TemplateView):
         context['recent_movies'] = Movie.objects.all()[:6]
         context['latest_news'] = News.objects.all()[:5]
         return context
+    
+    def post(self, request, *args, **kwargs):
+        email = request.POST.get('email')
+        if email:
+            print(f"New subscriber: {email}")
+        return self.get(request, *args, **kwargs)
 
 
 class MovieListView(ListView):
