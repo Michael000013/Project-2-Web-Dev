@@ -135,6 +135,25 @@
     {% endif %}
 </div>
 
+<!-- Featured Celebrities Section -->
+<section class="celebrities mt-5">
+  <h2 class="mb-4 text-center"><i class="fas fa-star"></i> Featured Celebrities</h2>
+  <div class="row">
+    {% for celeb in celebrities %}
+      <div class="col-md-3 text-center mb-4">
+        {% if celeb.image %}
+          <img src="{{ celeb.image.url }}" class="img-fluid rounded-circle mb-2"
+               style="height: 120px; width: 120px; object-fit: cover;">
+        {% else %}
+          <div style="height:120px;width:120px;background:#ccc;border-radius:50%;margin:auto;"></div>
+        {% endif %}
+        <h6>{{ celeb.name }}</h6>
+        <small class="text-muted">{{ celeb.celebrity_type }}</small>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
 <section class="newsletter text-center mt-5">
     <h3>Subscribe to our Newsletter</h3>
     <form method="POST">
@@ -144,17 +163,4 @@
     </form>
 </section>
 
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    // Auto-rotate slider every 5 seconds
-    const carousel = document.getElementById('sliderCarousel');
-    if (carousel) {
-        new bootstrap.Carousel(carousel, {
-            interval: 5000,
-            wrap: true
-        });
-    }
-</script>
 {% endblock %}

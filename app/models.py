@@ -77,3 +77,42 @@ class Slider(models.Model):
 
     def __str__(self):
         return self.title or f"Slide {self.id}"
+    
+class Advertisement(models.Model):
+    section = models.CharField(max_length=20)
+    img_src = models.ImageField(upload_to='ads/')
+    img_width = models.IntegerField(default=300)
+    img_height = models.IntegerField(default=250)
+    
+    def __str__(self):
+        return self.section
+    
+class SocialLink(models.Model):
+    name = models.CharField(max_length=50)
+    icon_class = models.CharField(max_length=30)
+    url = models.URLField()
+    
+    def __str__(self):
+        return self.name
+    
+class Celebrity(models.Model):
+    name = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='celebrities/', blank=True, null=True)
+    celebrity_type = models.CharField(max_length=20)
+    celebrity_url = models.URLField(blank=True, null=True)
+    
+    def __str__(self):
+        return self.name
+    
+class Tweet(models.Model):
+    content = models.TextField()
+    
+    def __str__(self):
+        return self.content[:50]
+    
+class NewsletterSubscriber(models.Model):
+    email = models.EmailField(unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.email
