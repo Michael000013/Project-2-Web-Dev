@@ -4,7 +4,7 @@ Registers models and configures admin interface.
 """
 
 from django.contrib import admin
-from .models import Movie, Trailer, News, Slider
+from .models import Movie, Trailer, News, Slider, Advertisement, SocialLink, Celebrity, Tweet, NewsletterSubscriber 
 
 
 @admin.register(Movie)
@@ -75,3 +75,9 @@ class SliderAdmin(admin.ModelAdmin):
 admin.site.site_header = "Movie Portal Admin"
 admin.site.site_title = "Movie Portal"
 admin.site.index_title = "Welcome to Movie Portal Administration"
+
+admin.site.register(Advertisement)
+admin.site.register(SocialLink)
+admin.site.register(Celebrity)
+admin.site.register(Tweet)
+admin.register(NewsletterSubscriber)

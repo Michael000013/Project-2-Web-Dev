@@ -5,7 +5,7 @@ Handles rendering of movies, trailers, news, and sliders.
 
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, TemplateView
-from .models import Movie, Trailer, News, Slider
+from .models import Celebrity, Movie, Trailer, News, Slider, SocialLink
 
 
 class HomeView(TemplateView):
@@ -18,7 +18,15 @@ class HomeView(TemplateView):
         context['featured_news'] = News.objects.filter(is_featured=True)[:3]
         context['recent_movies'] = Movie.objects.all()[:6]
         context['latest_news'] = News.objects.all()[:5]
+        context['celebrities'] = Celebrity.objects.all()
+        context['social_links'] = SocialLink.objects.all()
         return context
+    
+    def post(self, request, *args, **kwargs):
+        email = request.POST.get('email')
+        if email:
+            print(f"New subscriber: {email}")
+        return self.get(request, *args, **kwargs)
 
 
 class MovieListView(ListView):
