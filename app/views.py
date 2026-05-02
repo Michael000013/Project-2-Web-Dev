@@ -3,9 +3,10 @@ Views for the movie application.
 Handles rendering of movies, trailers, news, and sliders.
 """
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, TemplateView
-from .models import Celebrity, Movie, Trailer, News, Slider, MovieTheater, MovieTV
+from django.contrib import messages
+from .models import Celebrity, Movie, Trailer, News, Slider, MovieTheater, MovieTV, NewsletterSubscriber
 
 
 class HomeView(TemplateView):
@@ -24,10 +25,17 @@ class HomeView(TemplateView):
         return context
     
     def post(self, request, *args, **kwargs):
-        email = request.POST.get('email')
+        email = request.POST.get('email', '').strip()
         if email:
-            print(f"New subscriber: {email}")
-        return self.get(request, *args, **kwargs)
+            subscriber, created = NewsletterSubscriber.objects.get_or_create(email=email)
+            if created:
+                messages.success(request,'You have successfully subscribed!')
+            else:
+                messages.info(request,'This email is already subscribed.')
+        else:
+            messages.error(request,'Please enter a valid email address.')
+            
+        return redirect('app:home')
 
 
 class MovieListView(ListView):
