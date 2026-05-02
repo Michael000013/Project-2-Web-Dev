@@ -6,7 +6,7 @@ Handles rendering of movies, trailers, news, and sliders.
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib import messages
-from .models import Celebrity, Movie, Trailer, News, Slider, MovieTheater, MovieTV, NewsletterSubscriber
+from .models import Celebrity, Movie, Trailer, News, Slider, MovieTheater, MovieTV, NewsletterSubscriber, SocialLink
 
 
 class HomeView(TemplateView):
@@ -22,6 +22,7 @@ class HomeView(TemplateView):
         context['celebrities'] = Celebrity.objects.all()[:4]
         context['movie_theaters'] = MovieTheater.objects.all()[:4]
         context['movie_tvs'] = MovieTV.objects.all()[:4]
+        context['social_links'] = SocialLink.objects.all()
         return context
     
     def post(self, request, *args, **kwargs):
