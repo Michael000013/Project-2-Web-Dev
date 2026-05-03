@@ -156,7 +156,7 @@
 
 <section class="social-links text-center mt-5">
     <h4>Follow Us</h4>
-    <div class="d-flex justify-content-center gap-3">
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
         {% for link in social_links %}
         <a href="{{ link.url }}" target="_blank" class="btn btn-outline-dark">
             <i class="{{ link.icon_class }}"></i> {{ link.name }}
@@ -167,10 +167,26 @@
 
 <section class="newsletter text-center mt-5">
     <h3>Subscribe to our Newsletter</h3>
-    <form method="POST">
+    <p class="text-muted">Get the latest movie news delivered to your inbox.</p>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show d-inline-block mb-3" role="alert" style="min-width:300px;">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="{% url 'app:home' %}" class="d-flex justify-content-center gap-2 flex-wrap">
         {% csrf_token %}
-        <input type="email" name="email" placeholder="Enter your email" required>
-        <button type="submit" class="btn btn-primary">Subscribe</button>
+        <input type="email"
+               name="email"
+               placeholder="Enter your email"
+               required
+               class="form-control"
+               style="max-width:300px;">
+        <button type="submit" class="btn btn-danger">SUBSCRIBE NOW</button>
     </form>
 </section>
 

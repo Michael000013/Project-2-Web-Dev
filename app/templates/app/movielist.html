@@ -5,103 +5,152 @@
 
 {% block content %}
 <div class="container my-5">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="display-4"><i class="fas fa-video"></i> All Movies</h1>
-            <p class="text-muted">Browse our complete collection of movies</p>
+
+    <!-- IN THEATER section -->
+    <div class="row mb-2 align-items-center">
+        <div class="col">
+            <h2 class="section-heading">IN THEATER</h2>
+        </div>
+        <div class="col-auto">
+            <a href="#" class="view-all-link">VIEW ALL &rsaquo;</a>
         </div>
     </div>
 
-    {% if movies %}
-    <div class="row">
-        {% for movie in movies %}
-        <div class="col-md-4 col-sm-6 mb-4">
-            <!-- DB -->
-            <div class="movie-card card h-100 shadow-sm hover-card">
-                {% if movie.cover_image %}
-                <img src="{{ movie.cover_image.url }}" class="card-img-top" alt="{{ movie.title }}" style="height: 300px; object-fit: cover;">
-                {% else %}
-                <div style="height: 300px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-image fa-3x text-white"></i>
-                </div>
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ movie.title }}</h5>
-                    <p class="text-muted small mb-2">
-                        <strong>Genre:</strong> {{ movie.genre }}<br>
-                        <strong>Director:</strong> {{ movie.director }}
-                    </p>
-                    <p class="card-text small">{{ movie.description|truncatewords:10 }}</p>
-                    
-                    <!-- DB - Rating Display -->
-                    <div class="rating mb-2">
-                        {% for i in "x"|rjust:"5" %}
-                        <i class="fas fa-star {% if forloop.counter <= movie.rating %}text-warning{% else %}text-secondary{% endif %}"></i>
-                        {% endfor %}
-                        <span class="ms-2 text-muted">{{ movie.rating }}/5</span>
+    {% if theater_movies %}
+    <div class="row mb-5">
+        {% for movie in theater_movies %}
+        <!-- DB -->
+        <div class="col-md-3 col-sm-6 mb-4">
+            <a href="{{ movie.anchor_url }}" class="movie-card-link">
+                <div class="movie-card">
+                    <img src="{{ movie.img_src }}"
+                         width="{{ movie.img_width }}"
+                         height="{{ movie.img_height }}"
+                         alt="{{ movie.movie_title }}"
+                         class="movie-card-img">
+                    <div class="movie-card-body">
+                        <span class="genre-badge">{{ movie.movie_genre }}</span>
+                        <p class="movie-title">{{ movie.movie_title }}</p>
+                        <p class="movie-rating">
+                            <i class="fas fa-star"></i>
+                            {{ movie.lower_rating }}/{{ movie.upper_rating }}
+                        </p>
                     </div>
-
-                    <!-- DB - Movie Details -->
-                    <small class="text-muted d-block mb-2">
-                        <i class="fas fa-calendar"></i> {{ movie.release_date|date:"M d, Y" }}<br>
-                        <i class="fas fa-clock"></i> {{ movie.duration }} mins
-                    </small>
                 </div>
-                <div class="card-footer bg-white">
-                    <a href="{% url 'app:movie_detail' movie.pk %}" class="btn btn-primary btn-sm w-100">View Details</a>
-                </div>
-            </div>
+            </a>
         </div>
         {% endfor %}
     </div>
-
-    <!-- Pagination -->
-    {% if is_paginated %}
-    <nav class="mt-5" aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page=1">First</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-            </li>
-            {% endif %}
-
-            {% for num in page_obj.paginator.page_range %}
-            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-            </li>
-            {% endfor %}
-
-            {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
-    {% endif %}
-
     {% else %}
-    <div class="alert alert-info text-center py-5">
-        <p>No movies available at the moment. Check back soon!</p>
-    </div>
+    <div class="alert alert-secondary mb-5">No theater movies available.</div>
     {% endif %}
+
+    <!-- ON TV section -->
+    <div class="row mb-2 align-items-center">
+        <div class="col">
+            <h2 class="section-heading">ON TV</h2>
+        </div>
+        <div class="col-auto">
+            <a href="#" class="view-all-link">VIEW ALL &rsaquo;</a>
+        </div>
+    </div>
+
+    {% if tv_movies %}
+    <div class="row mb-5">
+        {% for movie in tv_movies %}
+        <!-- DB -->
+        <div class="col-md-3 col-sm-6 mb-4">
+            <a href="{{ movie.anchor_url }}" class="movie-card-link">
+                <div class="movie-card">
+                    <img src="{{ movie.img_src }}"
+                         width="{{ movie.img_width }}"
+                         height="{{ movie.img_height }}"
+                         alt="{{ movie.movie_title }}"
+                         class="movie-card-img">
+                    <div class="movie-card-body">
+                        <span class="genre-badge">{{ movie.movie_genre }}</span>
+                        <p class="movie-title">{{ movie.movie_title }}</p>
+                        <p class="movie-rating">
+                            <i class="fas fa-star"></i>
+                            {{ movie.lower_rating }}/{{ movie.upper_rating }}
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-secondary mb-5">No TV movies available.</div>
+    {% endif %}
+
 </div>
 {% endblock %}
 
 {% block extra_css %}
 <style>
-    .hover-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    .section-heading {
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--bs-body-color);
+        margin: 0;
     }
-    .hover-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    .view-all-link {
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        color: var(--bs-secondary);
+    }
+    .movie-card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+    .movie-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 4px;
+        background: #111;
+        transition: transform 0.2s ease;
+    }
+    .movie-card:hover {
+        transform: translateY(-4px);
+    }
+    .movie-card-img {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+        display: block;
+    }
+    .movie-card-body {
+        padding: 0.6rem 0.5rem 0.5rem;
+    }
+    .genre-badge {
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        background: #e74c3c;
+        color: #fff;
+        padding: 2px 6px;
+        border-radius: 2px;
+    }
+    .movie-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin: 0.4rem 0 0.2rem;
+        color: #fff;
+    }
+    .movie-rating {
+        font-size: 0.75rem;
+        color: #f1c40f;
+        margin: 0;
+    }
+    .movie-rating .fas {
+        font-size: 0.7rem;
     }
 </style>
 {% endblock %}

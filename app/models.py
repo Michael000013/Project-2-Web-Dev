@@ -116,3 +116,35 @@ class NewsletterSubscriber(models.Model):
     
     def __str__(self):
         return self.email
+
+class MovieTheater(models.Model):
+    type = models.CharField(max_length=20)
+    img_src = models.CharField(max_length=200)
+    img_width = models.IntegerField()
+    img_height = models.IntegerField()
+    anchor_url = models.CharField(max_length=200)
+    movie_genre = models.CharField(max_length=10)
+    movie_title = models.CharField(max_length=20)
+    lower_rating = models.CharField(max_length=5)
+    upper_rating = models.CharField(max_length=5)
+
+    def __str__(self):
+        return self.movie_title
+
+class MovieTV(models.Model):
+    type = models.CharField(max_length=20)
+    img_src = models.CharField(max_length=200)
+    img_width = models.IntegerField()
+    img_height = models.IntegerField()
+    anchor_url = models.CharField(max_length=200)
+    movie_genre = models.CharField(max_length=10)
+    movie_title = models.CharField(max_length=20)
+    lower_rating = models.CharField(max_length=5)
+    upper_rating = models.CharField(max_length=5)
+
+    class Meta:
+        verbose_name = "Movie TV"
+        verbose_name_plural = "Movies TV"
+        
+    def __str__(self):
+        return self.movie_title

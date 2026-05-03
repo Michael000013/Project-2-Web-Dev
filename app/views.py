@@ -3,9 +3,10 @@ Views for the movie application.
 Handles rendering of movies, trailers, news, and sliders.
 """
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, TemplateView
-from .models import Celebrity, Movie, Trailer, News, Slider, SocialLink
+from django.contrib import messages
+from .models import Celebrity, Movie, Trailer, News, Slider, MovieTheater, MovieTV, NewsletterSubscriber, SocialLink
 
 
 class HomeView(TemplateView):
@@ -18,15 +19,24 @@ class HomeView(TemplateView):
         context['featured_news'] = News.objects.filter(is_featured=True)[:3]
         context['recent_movies'] = Movie.objects.all()[:6]
         context['latest_news'] = News.objects.all()[:5]
-        context['celebrities'] = Celebrity.objects.all()
+        context['celebrities'] = Celebrity.objects.all()[:4]
+        context['movie_theaters'] = MovieTheater.objects.all()[:4]
+        context['movie_tvs'] = MovieTV.objects.all()[:4]
         context['social_links'] = SocialLink.objects.all()
         return context
     
     def post(self, request, *args, **kwargs):
-        email = request.POST.get('email')
+        email = request.POST.get('email', '').strip()
         if email:
-            print(f"New subscriber: {email}")
-        return self.get(request, *args, **kwargs)
+            subscriber, created = NewsletterSubscriber.objects.get_or_create(email=email)
+            if created:
+                messages.success(request,'You have successfully subscribed!')
+            else:
+                messages.info(request,'This email is already subscribed.')
+        else:
+            messages.error(request,'Please enter a valid email address.')
+            
+        return redirect('app:home')
 
 
 class MovieListView(ListView):
@@ -39,6 +49,8 @@ class MovieListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'All Movies'
+        context['theater_movies'] = MovieTheater.objects.all()
+        context['tv_movies'] = MovieTV.objects.all()
         return context
 
 
